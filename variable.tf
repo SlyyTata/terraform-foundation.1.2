@@ -4,10 +4,22 @@ variable "cidr_block" {
   default     = "52.129.0.0/16"
 }
 
-variable "subnet_cidr_block" {
-  description = "The CIDR block for the subnet"
+variable "pub_subnet_cidr_block" {
+  description = "The CIDR block for the public subnet"
   type        = string
   default     = "52.129.0.0/24"
+}
+
+variable "priv_subnet_cidr_block_1" {
+  description = "The CIDR block for the second private subnet"
+  type        = string
+  default     = "52.129.1.0/24"
+}
+
+variable "priv_subnet_cidr_block_2" {
+  description = "The CIDR block for the third private subnet"
+  type        = string
+  default     = "52.129.2.0/24"
 }
 
 variable "bucket_name" {
