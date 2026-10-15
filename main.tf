@@ -18,6 +18,16 @@ resource "aws_subnet" "pub-subnet" {
   }
 }
 
+resource "aws_subnet" "pub-subnet-2" {
+  vpc_id     = aws_vpc.my_vpc.id
+  cidr_block = var.pub_subnet_cidr_block_2
+  availability_zone = "${var.region}d"
+
+  tags = {
+    Name = "backend-public-subnet2"
+  }
+}
+
 #Creating a private subnet where the ECSs will resides
 resource "aws_subnet" "priv-subnet" {
   vpc_id     = aws_vpc.my_vpc.id
@@ -80,9 +90,14 @@ resource "aws_route_table" "pub_route_table" {
   }
 }
 
-#Linking the route table to the public subnet to allow communication between the public subnet and the internet gateway.
+#Linking the route table to the public subnets to allow communication between the public subnet and the internet gateway.
 resource "aws_route_table_association" "pub-subnet_association" {
   subnet_id      = aws_subnet.pub-subnet.id
+  route_table_id = aws_route_table.pub_route_table.id
+}
+
+resource "aws_route_table_association" "pub-subnet-2_association" {
+  subnet_id      = aws_subnet.pub-subnet-2.id
   route_table_id = aws_route_table.pub_route_table.id
 }
 

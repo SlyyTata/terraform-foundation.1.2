@@ -10,6 +10,12 @@ variable "pub_subnet_cidr_block" {
   default     = "52.129.0.0/24"
 }
 
+variable "pub_subnet_cidr_block_2" {
+  description = "The CIDR block for the second public subnet"
+  type        = string
+  default     = "52.129.6.0/24"
+}
+
 variable "priv_subnet_cidr_block_1" {
   description = "The CIDR block for the second private subnet"
   type        = string
