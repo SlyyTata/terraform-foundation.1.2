@@ -39,3 +39,9 @@ variable "region" {
   type        = string
   default     = "eu-west-2"
 }
+
+variable "docker-image" {
+  description = "The Docker image to use for the container"
+  type        = string
+  default     = "slyytata/project1:v1"
+}

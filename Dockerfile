@@ -1,14 +1,11 @@
-# Use the official Nginx image from the Docker Hub
 FROM nginx:alpine
-
-# Set the working directory to /usr/share/nginx/html
 WORKDIR /usr/share/nginx/html
 
-# Copy the index.html file from the current directory to the working directory in the container
-COPY --chown=nginx:nginx . .
+# Clean the default NGINX files
+RUN rm -rf ./*
 
-# Expose port 8080 to the outside world
-EXPOSE 8080
+# This will now ONLY copy the whitelisted files from your .dockerignore
+COPY . .
 
-# Start Nginx when the container launches
+EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
