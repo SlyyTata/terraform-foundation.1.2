@@ -1,0 +1,19 @@
+output "vpc_id" {
+  value = aws_vpc.my_vpc.id
+}
+
+output "s3_bucket_name" {
+  value = aws_s3_bucket.my_bucket.bucket
+}
+
+output "ecs_cluster_name" {
+  value = aws_ecs_cluster.my_ecs_cluster.name
+}
+
+output "ecs_service_name" {
+  value = aws_ecs_service.my_ecs_service.name
+}
+
+output "ecs_task_definition_arn" {
+  value = aws_ecs_task_definition.my_task_definition.arn
+}

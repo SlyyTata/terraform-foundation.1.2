@@ -63,6 +63,12 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v6.3.0
+      with:
+        aws-region: eu-west-2
+        role-to-assume: ${{ secrets.IAM_ROLE }}
+
     # Install the latest version of Terraform
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1

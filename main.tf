@@ -3,9 +3,10 @@
 resource "aws_vpc" "my_vpc" {
   cidr_block = var.cidr_block
   tags = {
-    Name = "backend-vpc"
+    Name = var.vpc_name
   }
 }
+
 
 #Creating a public subnet where the ALB will resides
 resource "aws_subnet" "pub-subnet" {
@@ -14,17 +15,17 @@ resource "aws_subnet" "pub-subnet" {
   availability_zone = "${var.region}a"
 
   tags = {
-    Name = "backend-public-subnet1"
+    Name = "public-subnet1"
   }
 }
 
 resource "aws_subnet" "pub-subnet-2" {
   vpc_id     = aws_vpc.my_vpc.id
   cidr_block = var.pub_subnet_cidr_block_2
-  availability_zone = "${var.region}d"
+  availability_zone = "${var.region}b"
 
   tags = {
-    Name = "backend-public-subnet2"
+    Name = "public-subnet2"
   }
 }
 
@@ -32,10 +33,10 @@ resource "aws_subnet" "pub-subnet-2" {
 resource "aws_subnet" "priv-subnet" {
   vpc_id     = aws_vpc.my_vpc.id
   cidr_block = var.priv_subnet_cidr_block_1
-  availability_zone = "${var.region}b"
+  availability_zone = "${var.region}a"
 
   tags = {
-    Name = "backend-private-subnet1"
+    Name = "private-subnet1"
   }
 }
 
@@ -43,10 +44,10 @@ resource "aws_subnet" "priv-subnet" {
 resource "aws_subnet" "priv-subnet-2" {
   vpc_id     = aws_vpc.my_vpc.id
   cidr_block = var.priv_subnet_cidr_block_2
-  availability_zone = "${var.region}c"
+  availability_zone = "${var.region}b"
 
   tags = {
-    Name = "backend-private-subnet2"
+    Name = "private-subnet2"
   }
 }
 
@@ -55,7 +56,7 @@ resource "aws_internet_gateway" "my_igw" {
   vpc_id = aws_vpc.my_vpc.id
 
   tags = {
-    Name = "backend-igw"
+    Name = "internet-gateway"
   }
 }
 
@@ -71,7 +72,7 @@ resource "aws_nat_gateway" "my_nat_gateway" {
   allocation_id = aws_eip.my_eip.id
 
   tags = {
-    Name = "backend-nat-gateway"
+    Name = "nat-gateway"
   }
 }
 
@@ -86,7 +87,7 @@ resource "aws_route_table" "pub_route_table" {
   }
 
   tags = {
-    Name = "backend-route-table"
+    Name = "public-route-table"
   }
 }
 
@@ -106,7 +107,7 @@ resource "aws_route_table" "priv_route_table" {
   vpc_id = aws_vpc.my_vpc.id
 
   tags = {
-    Name = "backend-private-route-table"
+    Name = "private-route-table"
   }
 }
 
@@ -114,7 +115,7 @@ resource "aws_route_table" "priv_route_table" {
 resource "aws_route" "priv_route" {
   route_table_id         = aws_route_table.priv_route_table.id
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id = aws_nat_gateway.my_nat_gateway.id
+  nat_gateway_id = aws_nat_gateway.my_nat_gateway.id  # NOTE 3
 }
 
 #Linking the private route table to the private subnets.
@@ -130,7 +131,7 @@ resource "aws_route_table_association" "priv-subnet-2_association" {
 
 #Creating a security group to allow inbound traffic on port 80 and 443 for the ALB.
 resource "aws_security_group" "my_security_group" {
-  name        = "backend-sg"
+  name        = "alb-security-group"
   description = "Allow inbound traffic on port 80 and 443"
   vpc_id      = aws_vpc.my_vpc.id
 
@@ -158,7 +159,7 @@ resource "aws_security_group" "my_security_group" {
 
 #Creating the ecs service security group to isolate the service
 resource "aws_security_group" "service_sg" {
-  name        = "service_sg"
+  name        = "svc-security-group"
   description = "Allow inbound traffic on port 8008"
   vpc_id      = aws_vpc.my_vpc.id
 
@@ -226,7 +227,7 @@ resource "aws_kms_key" "my_kms_key" {
   enable_key_rotation     = true
 
   tags = {
-    Name        = "My KMS Key"
+    Name        = "My-KMS-Key"
     Environment = "Dev"
   }
 }
@@ -245,7 +246,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "my_bucket_encrypt
 
 #Creating an ECS task definition to run a containerized docker application on Fargate.
 resource "aws_ecs_task_definition" "my_task_definition" {
-  family                   = "slyy-tata-task-def0074"
+  family                   = var.ecs_task_definition_name
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = "256"
@@ -271,7 +272,7 @@ resource "aws_ecs_service" "my_ecs_service" {
 
   depends_on = [aws_ecs_task_definition.my_task_definition]
 
-  name            = "slyy-tata-ecs-service"
+  name            = var.ecs_service_name
   cluster         = aws_ecs_cluster.my_ecs_cluster.id
   task_definition = aws_ecs_task_definition.my_task_definition.arn
   desired_count   = 1
@@ -286,5 +287,5 @@ resource "aws_ecs_service" "my_ecs_service" {
 
 #Creating an ECS cluster to run the ECS service on Fargate.
 resource "aws_ecs_cluster" "my_ecs_cluster" {
-  name = "slyy-tata-ecs-cluster"
+  name = var.ecs_cluster_name
 }
