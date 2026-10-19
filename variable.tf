@@ -48,6 +48,12 @@ variable "docker-image" {
   type        = string
 }
 
+variable "lb_name" {
+  description = "The name of the application Load Balancer"
+  type        = string
+}
+
+
 variable "ecs_cluster_name" {
   description = "The name of the ECS cluster"
   type        = string
@@ -61,4 +67,9 @@ variable "ecs_service_name" {
 variable "ecs_task_definition_name" {
   description = "The name of the ECS task definition"
   type        = string
+}
+
+variable "container_port" {
+  description = "The port exposed on the conatiner"
+  type        = number
 }

@@ -5,7 +5,6 @@
 !Dockerfile
 
 # 3. Whitelist only your web files/assets (Add any extensions you use)
-!*.html
 !*.css
 !*.js
 !*.png

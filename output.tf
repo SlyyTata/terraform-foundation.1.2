@@ -17,3 +17,11 @@ output "ecs_service_name" {
 output "ecs_task_definition_arn" {
   value = aws_ecs_task_definition.my_task_definition.arn
 }
+
+output "application_load_balancer" {
+  value = aws_lb.application_lb.name
+}
+
+output "container_port" {
+  value = var.container_port
+}
