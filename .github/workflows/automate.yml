@@ -1,7 +1,7 @@
 
 name: To automate the infrastructure with Terraform
 
-#Adding triggers
+#Adding triggers for the workflow
 on:
   push:
     branches: [ "main" ]

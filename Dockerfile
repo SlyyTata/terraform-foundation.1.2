@@ -13,10 +13,10 @@ RUN rm -rf ./*
 # This will now ONLY copy the whitelisted files from your .dockerignore
 COPY . .
 
-# ➔ FIX 1: Explicitly write a fallback index file to guarantee the directory is not empty
+# Create index.html file to guarantee the directory is not empty
 RUN echo '<h1>Hello from Fargate on Port 8008</h1>' > index.html
 
-# ➔ FIX 2: Explicitly grant Nginx ownership and read rights to everything in this directory
+# Grant Nginx ownership and read rights to everything in this directory
 RUN chmod -R 755 /usr/share/nginx/html && chown -R nginx:nginx /usr/share/nginx/html
 
 # Expose port 8008 to allow traffic to the NGINX server
