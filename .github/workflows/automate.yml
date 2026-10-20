@@ -1,6 +1,7 @@
 
 name: To automate the infrastructure with Terraform
 
+#Adding triggers
 on:
   push:
     branches: [ "main" ]
@@ -19,12 +20,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+        #To configure AWS credential with the OIDC connection
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v6.3.0
         with:
           aws-region: eu-west-2
           role-to-assume: ${{ secrets.ROLE }}
 
+          #Set up terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
