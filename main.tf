@@ -356,8 +356,26 @@ resource "aws_lb_target_group" "ecs_tg" {
 # 3. ALB Listener (Links the ALB to the Target Group)
 resource "aws_lb_listener" "http" {
   load_balancer_arn = aws_lb.application_lb.arn
-  port              = var.container_port
+  port              = "80"
   protocol          = "HTTP"
+
+  default_action {
+    type = "redirect"
+
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+}
+
+resource "aws_lb_listener" "https" {
+  load_balancer_arn = aws_lb.application_lb.arn
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = var.certificate_arn
 
   default_action {
     type             = "forward"

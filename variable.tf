@@ -70,6 +70,11 @@ variable "ecs_task_definition_name" {
 }
 
 variable "container_port" {
-  description = "The port exposed on the conatiner"
+  description = "The port exposed on the container"
   type        = number
+}
+
+variable "certificate_arn" {
+  description = "The ACM certificate arn"
+  type        = string
 }
